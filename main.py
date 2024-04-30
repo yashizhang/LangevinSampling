@@ -60,7 +60,6 @@ def plot_samples(samples, method_name):
     plt.xlabel('Position')
     plt.ylabel('Target')
     plt.savefig(f'{method_name}.pdf', format='pdf', dpi=600)
-    plt.show()
     plt.close()
 
 if __name__ == '__main__':
@@ -106,6 +105,17 @@ if __name__ == '__main__':
         plot_samples(ulmc_samples, 'ULMC')
         plot_samples(hmc_samples, 'HMC')
         plot_samples(mhmc_samples, 'MHMC')
+
+        # Plot the density
+        plt.figure(figsize=(10, 6))
+        x = np.linspace(-10, 10, 100)
+        y = np.exp(-potential_function_numpy(x)) * 0.2
+        plt.plot(x, y, label='Target Density')
+        plt.xlabel('')
+        plt.ylabel('')
+        plt.tight_layout()
+        plt.title('')
+        plt.savefig('target_density.pdf', format='pdf', dpi=600)
 
     elif option == 2:
         def plot_contour(method_name, weights, model, y_test):
@@ -439,80 +449,3 @@ if __name__ == '__main__':
         plt.show()
         plt.savefig('nn.pdf', format='pdf', dpi=600)
     print('Done')
-
-'''
-# Neural network hyperparameters
-input_dim = X_train_tensor.shape[1]
-hidden_dim = 50
-output_dim = 1
-num_epochs = 100
-learning_rate = 0.01
-
-# Train the neural network
-model = TwoLayerNN(input_dim, hidden_dim, output_dim)
-train_nn(model, X_train_tensor, y_train_tensor, num_epochs, learning_rate)
-
-# Sample from the posterior using different samplers
-num_samples = 1000
-step_size = 0.1
-
-lmc_sampler = LangevinMonteCarlo(potential_func_nn, step_size, num_samples)
-mala_sampler = MetropolisAdjustedLangevinAlgorithm(potential_func_nn, step_size, num_samples)
-hmc_sampler = HamiltonianMonteCarlo(potential_func_nn, step_size, num_samples, leapfrog_steps=10)
-
-lmc_params = sample_nn_posterior(lmc_sampler, num_samples)
-mala_params = sample_nn_posterior(mala_sampler, num_samples)
-hmc_params = sample_nn_posterior(hmc_sampler, num_samples)
-
-# Make predictions using the sampled parameters
-lmc_predictions = predict_nn(X_test, lmc_params)
-mala_predictions = predict_nn(X_test, mala_params)
-hmc_predictions = predict_nn(X_test, hmc_params)
-
-# Evaluate accuracy
-lmc_accuracy = accuracy_score(y_test, lmc_predictions)
-mala_accuracy = accuracy_score(y_test, mala_predictions)
-hmc_accuracy = accuracy_score(y_test, hmc_predictions)
-
-
-
-
-
-
-
-
-# Instantiate the samplers
-num_samples = 1000
-step_size = 0.1
-num_features = X_train_tensor.shape[1]
-
-lmc_sampler = LangevinMonteCarlo(num_features, step_size, num_samples)
-mala_sampler = MetropolisAdjustedLangevinAlgorithm(num_features, step_size, num_samples)
-hmc_sampler = HamiltonianMonteCarlo(num_features, step_size, num_samples, leapfrog_steps=10)
-
-# Bayesian logistic regression with different samplers
-blr_lmc = BayesianLogisticRegression(num_features, num_samples, lmc_sampler)
-blr_mala = BayesianLogisticRegression(num_features, num_samples, mala_sampler)
-blr_hmc = BayesianLogisticRegression(num_features, num_samples, hmc_sampler)
-
-# Sample weights
-lmc_weights = blr_lmc.sample_weights()
-mala_weights = blr_mala.sample_weights()
-hmc_weights = blr_hmc.sample_weights()
-
-# Make predictions
-lmc_predictions = blr_lmc.predict(X_test, lmc_weights)
-mala_predictions = blr_mala.predict(X_test, mala_weights)
-hmc_predictions = blr_hmc.predict(X_test, hmc_weights)
-
-# Evaluate accuracy
-lmc_accuracy = accuracy_score(y_test, lmc_predictions)
-mala_accuracy = accuracy_score(y_test, mala_predictions)
-hmc_accuracy = accuracy_score(y_test, hmc_predictions)
-
-print("Bayesian Logistic Regression Accuracy:")
-print("LMC: {:.4f}".format(lmc_accuracy))
-print("MALA: {:.4f}".format(mala_accuracy))
-print("HMC: {:.4f}".format(hmc_accuracy))
-
-'''
