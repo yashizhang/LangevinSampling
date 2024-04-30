@@ -56,9 +56,23 @@ def plot_samples(samples, method_name):
 
     plt.plot(x, y, label='Target Density')
     plt.hist(samples, bins=50, density=True, alpha=0.5, label=f'{method_name} Empirical Density')
-    plt.legend()
-    plt.xlabel('Position')
-    plt.ylabel('Target')
+    plt.xlabel('')
+    plt.ylabel('')
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+    plt.gca().spines['left'].set_visible(False)
+    plt.tick_params(
+        axis='x',         
+        which='both',   
+        bottom=False,    
+        top=False,      
+        labelbottom=False) 
+    plt.tick_params(
+        axis='y',       
+        which='both',    
+        left=False,     
+        right=False,     
+        labelleft=False)
     plt.savefig(f'{method_name}.pdf', format='pdf', dpi=600)
     plt.close()
 
@@ -72,10 +86,10 @@ if __name__ == '__main__':
         lmc_step_size = 0.1
         lmc_sampler = LangevinMonteCarlo(potential_function, lmc_step_size, num_steps)
 
-        mrw_step_size = 0.1
+        mrw_step_size = 0.05
         mrw_sampler = MetropolisRandomWalk(potential_function, mrw_step_size, num_steps)
 
-        mala_step_size = 0.1
+        mala_step_size = 0.05
         mala_sampler = MetropolisAdjustedLangevinAlgorithm(potential_function, mala_step_size, num_steps)
 
         ulmc_step_size = 0.1
@@ -86,7 +100,7 @@ if __name__ == '__main__':
         hmc_leapfrog_steps = 10
         hmc_sampler = HamiltonianMonteCarlo(potential_function, hmc_step_size, num_steps, hmc_leapfrog_steps)
 
-        mhmc_step_size = 0.1
+        mhmc_step_size = 0.05
         mhmc_leapfrog_steps = 10
         mhmc_sampler = MetropolizedHamiltonianMonteCarlo(potential_function, mhmc_step_size, num_steps, mhmc_leapfrog_steps)
 
